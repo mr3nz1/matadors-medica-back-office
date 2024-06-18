@@ -13,21 +13,21 @@ function Contact() {
           <div className="flex items-center gap-7 justify-center w-full">
             <div className="flex flex-col p-5 w-full justify-between">
               <label htmlFor="name" className="py-2 flex flex-col">
-                subject
+                Subject
                 <input
                   type="text"
                   className="p-1 rounded-xl border-2 border-[#7CA6FE] bg-[#A7C4FE]"
                 />
               </label>
               <label htmlFor="name" className="py-2 flex flex-col">
-                subject
+               Name
                 <input
                   type="text"
                   className="p-1 rounded-xl border-2 border-[#7CA6FE] bg-[#A7C4FE]"
                 />
               </label>
               <label htmlFor="name" className="py-2 flex flex-col">
-                subject
+               E-mail
                 <input
                   type="text"
                   className="p-1 rounded-xl border-2 border-[#7CA6FE] bg-[#A7C4FE]"
