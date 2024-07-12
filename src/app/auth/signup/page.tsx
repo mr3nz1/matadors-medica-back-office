@@ -6,37 +6,16 @@ import Image from 'next/image';
 import Navbar from '../../components/navbar';
 import Logo from '../../assets/images/sign.png';
 import Link from 'next/link';
-import Button from '@/app/components/button';
+import { signup } from '../action';
 
-const SignupForm = () => {
+const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (e:React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-  
-    localStorage.setItem('userData', JSON.stringify({ email, password }));
-
-  
-    if (rememberMe) {
-      localStorage.setItem('rememberMe', 'true');
-    } else {
-      localStorage.removeItem('rememberMe');
-    }
-
-    setEmail('');
-    setPassword('');
-    setRememberMe(false);
-
-    console.log('Form submitted', email, password);
-  };
 
   return (
     <>
@@ -51,7 +30,7 @@ const SignupForm = () => {
               <div>
                 <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Create Your Account</h2>
               </div>
-              <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+              <form className="mt-8 space-y-6">
                 <div className="rounded-md shadow-sm flex flex-col gap-5">
                   <div className="relative">
                     <label htmlFor="email-address" className="sr-only">Email address</label>
@@ -59,10 +38,7 @@ const SignupForm = () => {
                       id="email-address"
                       name="email"
                       type="email"
-                      autoComplete="email"
                       required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
                       className="appearance-none rounded-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                       placeholder="Email address"
                     />
@@ -76,10 +52,7 @@ const SignupForm = () => {
                       id="password"
                       name="password"
                       type={showPassword ? 'text' : 'password'}
-                      autoComplete="current-password"
                       required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
                       className="appearance-none rounded-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                       placeholder="Password"
                     />
@@ -105,7 +78,7 @@ const SignupForm = () => {
                   </div>
                 </div>
                 <div>
-                  <Button name='Sign Up'/>
+                  <button formAction={signup} className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 mb-4">Sign Up</button>
                 
                 </div>
                 <div className="text-center">
@@ -134,4 +107,4 @@ const SignupForm = () => {
   );
 };
 
-export default SignupForm;
+export default SignupPage;

@@ -27,13 +27,13 @@ export default function Index() {
             <div className="hidden md:flex gap-5">
               <ul className="flex gap-5 items-center">
                 <li>
-                  <Link href="/login" className="text-sm font-bold text-black self-center">HOME</Link>
+                  <Link href="/auth/signup" className="text-sm font-bold text-black self-center">HOME</Link>
                 </li>
                 <li>
-                  <Link href="/" className="text-sm font-bold text-black self-center">APP</Link>
+                  <Link href="/auth/login" className="text-sm font-bold text-black self-center">APP</Link>
                 </li>
                 <li>
-                  <Link href="/auth" className="text-sm font-bold text-black self-center">DOWNLOAD</Link>
+                  <Link href="/" className="text-sm font-bold text-black self-center">DOWNLOAD</Link>
                 </li>
                 <li>
                   <Link href="/" className="text-sm font-bold text-black self-center">CONTACT</Link>
