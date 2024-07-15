@@ -10,12 +10,16 @@ import { signup } from '../action';
 
 const SignupPage = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [showPassword1, setShowPassword1] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  const togglePasswordVisibility1 = () => {
+    setShowPassword1(!showPassword1);
+  };
 
   return (
     <>
@@ -61,6 +65,23 @@ const SignupPage = () => {
                     </div>
                     <div className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer" onClick={togglePasswordVisibility}>
                       {showPassword ? <FaEyeSlash className="text-black" /> : <FaEye className="text-black" />}
+                    </div>
+                  </div>
+                  <div className="relative">
+                    <label htmlFor="password" className="sr-only">Confirm Password</label>
+                    <input
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      type={showPassword1 ? 'text' : 'password'}
+                      required
+                      className="appearance-none rounded-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                      placeholder="Confirm Password"
+                    />
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FaLock className="text-black" />
+                    </div>
+                    <div className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer" onClick={togglePasswordVisibility1}>
+                      {showPassword1 ? <FaEyeSlash className="text-black" /> : <FaEye className="text-black" />}
                     </div>
                   </div>
                 </div>

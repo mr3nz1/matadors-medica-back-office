@@ -1,21 +1,41 @@
 
 "use client"
 import Layout from '@/app/components/layout';
-import React,{useState}from 'react';
+import React,{useEffect, useState}from 'react';
 import { FaFaceGrin } from 'react-icons/fa6';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import ForumIcon from '@mui/icons-material/Forum';
 import Search from '@/app/components/search';
+import { Logout } from '@/app/auth/action';
 
 const Home = () => {
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [filteredAppointments, setFilteredAppointments] = useState<any[]>([]);
+    const [greeting, setGreeting] = useState("");
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(event.target.value);
     };
 
-    // Perform filtering based on search query
+    useEffect(() => {
+      const updateGreeting = () => {
+        const now = new Date();
+        const hours = now.getHours();
+  
+        if (hours >= 12 && hours < 17) {
+          setGreeting("Good Afternoon");
+        } else if (hours >= 17 || hours < 1) {
+          setGreeting("Good Evening");
+        } else {
+          setGreeting("Good Morning");
+        }
+      };
+  
+      updateGreeting();
+      const intervalId = setInterval(updateGreeting, 60000);
+      return () => clearInterval(intervalId);
+    }, []);
+    
     const performSearch = () => {
         if (!searchQuery.trim()) {
             setFilteredAppointments([]);
@@ -28,7 +48,6 @@ const Home = () => {
         setFilteredAppointments(filtered);
     };
 
-    // Reset filtered results and search query
     const resetSearch = () => {
         setSearchQuery('');
         setFilteredAppointments([]);
@@ -54,10 +73,9 @@ const Home = () => {
 
   return (
     <Layout>
-         {/* <Search data={recentAppointments} onSearch={searchQuery} /> */}
       <div>
         <div className="mb-10">
-          <h1 className="text-xl text-[#757575] font-bold">Good Morning 👋</h1>
+          <h1 className="text-xl text-[#757575] font-bold"> {greeting}👋</h1>
           <h2 className="text-3xl mt-2 text-black">Dr. Drake Boeson</h2>
         </div>
         <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols gap-6 mb-10 text-black ">

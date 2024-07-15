@@ -19,11 +19,18 @@ export async function login(formData: FormData) {
   }
 
   revalidatePath('/', 'layout')
-  redirect('/private')
+  redirect('/dashboard/home')
 }
 
 export async function signup(formData: FormData) {
   const supabase = createClient()
+
+  const password = formData.get('password');
+  const confirmPassword = formData.get('confirmPassword');
+
+  if(password !== confirmPassword){
+    redirect('/error')
+  }
 
   const data = {
     email: formData.get('email') as string,
@@ -36,6 +43,26 @@ export async function signup(formData: FormData) {
     redirect('/error')
   }
 
+  const { error : create_doctor_error } = await supabase
+  .from("doctors")
+  .insert({ email: data.email,password : data.password });
+
+  if (create_doctor_error) {
+    redirect('/error')
+  }
+
   revalidatePath('/', 'layout')
   redirect('/auth/login')
 }
+
+export async function Logout(formData: FormData) {
+  const supabase = createClient();
+
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    redirect('/error');
+  } 
+    
+    redirect('/auth/login');
+  }
