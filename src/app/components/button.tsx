@@ -1,21 +1,22 @@
 import React from "react";
 
-interface ButtonProps {
+interface Props {
   name: string;
-  onClick?: () => void; // Optional onClick handler
-  className?: string;   // Optional additional CSS classes
+  onClick?: () => void;
+  config?: Object;
+  isLoading?: boolean;
 }
 
-const Button: React.FC<ButtonProps> = ({ name, onClick, className }) => {
+export default function Button({ name, onClick, config, isLoading }: Props) {
   return (
     <>
-
-     <button onClick={onClick} className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 mb-4">
-     {name} 
-   </button>
+      <button
+        onClick={onClick}
+        className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 mb-4"
+        {...config}
+      >
+        {isLoading ? "Loading..." : name}
+      </button>
     </>
-   
   );
 }
-
-export default Button;
