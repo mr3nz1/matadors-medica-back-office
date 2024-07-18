@@ -3,7 +3,7 @@ import React from 'react';
 import { FaApple, FaFacebook, FaGoogle } from 'react-icons/fa';
 import Logo from '../assets/images/log.png'
 
-import Navbar from '../components/navbar';
+import Navbar from '../../components/navbar';
 
 export default function Login() {
   return (

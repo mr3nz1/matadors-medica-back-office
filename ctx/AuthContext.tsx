@@ -5,6 +5,7 @@ import { supabase } from "../utils/supabase/config";
 
 export const AuthContext = createContext<AuthType>({
   user: {
+    id: "",
     firstName: "",
     lastName: "",
     email: "",
@@ -13,9 +14,11 @@ export const AuthContext = createContext<AuthType>({
     userId: "",
     token: "",
   },
-  setUser: () => {},
+  status: "",
   isLoggedIn: false,
+  setUser: () => {},
   setIsLoggedIn: () => {},
+  setStatus: () => {},
   login: async (email: string, password: string) => {},
   register: async (
     email: string,
@@ -33,6 +36,7 @@ interface Props {
 
 export default function AuthProvider({ children }: Props) {
   const [user, setUser] = useState({
+    id: "",
     firstName: "",
     lastName: "",
     email: "",
@@ -42,8 +46,10 @@ export default function AuthProvider({ children }: Props) {
     token: "",
   });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [status, setStatus] = useState("");
 
   async function login(email: string, password: string) {
+    setStatus("loading");
     const { data, error } = await supabase.auth.signInWithPassword({
       email: email,
       password: password,
@@ -67,6 +73,17 @@ export default function AuthProvider({ children }: Props) {
     }
 
     setIsLoggedIn(true);
+    setUser({
+      id: data.user.id,
+      firstName: doctor[0].first_name,
+      lastName: doctor[0].last_name,
+      email: doctor[0].email,
+      about: doctor[0].about,
+      specialization: doctor[0].specialization,
+      token: data.session?.access_token!,
+      userId: data.session?.user.id!,
+    });
+    setStatus("authenticated");
   }
 
   async function register(
@@ -77,7 +94,7 @@ export default function AuthProvider({ children }: Props) {
     specialization: string,
     about: string
   ) {
-    console.log("email: " + email, "password: " + password);
+    setStatus("loading");
 
     const { data, error } = await supabase.auth.signUp({ email, password });
 
@@ -106,6 +123,7 @@ export default function AuthProvider({ children }: Props) {
     });
 
     setUser({
+      id: data.user?.id!,
       firstName,
       lastName,
       email,
@@ -114,13 +132,16 @@ export default function AuthProvider({ children }: Props) {
       token: data.session?.access_token!,
       userId: data.session?.user.id!,
     });
+    setStatus("authenticated");
   }
 
   const value = {
     user,
-    setUser,
     isLoggedIn,
+    status,
+    setUser,
     setIsLoggedIn,
+    setStatus,
     login,
     register,
   };

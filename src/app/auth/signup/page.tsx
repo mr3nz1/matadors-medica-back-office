@@ -18,6 +18,7 @@ import { signup } from "../action";
 import Input from "@/app/components/Input";
 import Button from "@/app/components/Button";
 import { useAuth } from "../../../../ctx/AuthContext";
+import { useRouter } from "next/navigation";
 
 const SignupPage = () => {
   const [formData, setFormData] = useState({
@@ -33,7 +34,7 @@ const SignupPage = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const { register } = useAuth();
+  const { register, setStatus } = useAuth();
 
   async function handleFormChange(name: string, value: string) {
     console.log(name, value);
@@ -42,6 +43,8 @@ const SignupPage = () => {
       [name]: value,
     }));
   }
+
+  const router = useRouter();
 
   async function handleSubmit() {
     try {
@@ -60,9 +63,11 @@ const SignupPage = () => {
       );
 
       setIsLoading(false);
+      router.replace("/auth/login");
     } catch (err) {
       setError((err as Error).message);
       setIsLoading(false);
+      setStatus("error");
     }
   }
 
@@ -126,10 +131,7 @@ const SignupPage = () => {
                   placeholder="About you.."
                   className="text-gray-900 text-sm border border-gray-300 px-4 py-2 rounded-md outline-none"
                   onChange={(e) =>
-                    handleFormChange(
-                      e.target.name,
-                      formData.about + e.target.value
-                    )
+                    handleFormChange(e.target.name, e.target.value)
                   }
                   required={true}
                 />

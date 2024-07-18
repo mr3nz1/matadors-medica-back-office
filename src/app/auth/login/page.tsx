@@ -1,4 +1,3 @@
-// components/SignupForm.js
 "use client";
 import Navbar from "../../components/navbar";
 import Image from "next/image";
@@ -15,6 +14,7 @@ import Logo from "../../assets/images/log.png";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "../../../../ctx/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState<{
@@ -25,13 +25,15 @@ export default function LoginPage() {
     email: "",
     password: "",
   });
-  const { login, email, isLoggedIn, name } = useAuth();
+  const { login, user, setStatus } = useAuth();
   const [error, setError] = useState("");
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    console.log(name);
-    console.log(email);
-  }, [isLoggedIn]);
+    console.log(user.firstName + " " + user.lastName);
+    console.log(user.email);
+  }, [user]);
 
   function handleFormData(name: string, value: string) {
     setFormData((prevFormData) => ({
@@ -42,9 +44,14 @@ export default function LoginPage() {
 
   async function handleSubmit() {
     try {
+      setIsLoading(true);
       await login(formData.email, formData.password);
+      setIsLoading(false);
+      router.replace("/dashboard");
     } catch (err) {
       setError((err as Error).message);
+      setIsLoading(false);
+      setStatus("error");
     }
   }
 
@@ -128,7 +135,7 @@ export default function LoginPage() {
                     formAction={handleSubmit}
                     className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 mb-4"
                   >
-                    Sign In
+                    {isLoading ? "Loading" : "Sign In"}
                   </button>
 
                   <div className="text-center py-6">

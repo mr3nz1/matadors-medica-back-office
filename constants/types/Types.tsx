@@ -6,9 +6,11 @@ export interface AuthData {
 
 export interface AuthType {
   isLoggedIn: boolean;
+  status: string;
   user: User;
   setUser: React.Dispatch<React.SetStateAction<User>>;
   setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+  setStatus: React.Dispatch<React.SetStateAction<string>>;
   login: (email: string, password: string) => Promise<void>;
   register: (
     email: string,
@@ -21,6 +23,7 @@ export interface AuthType {
 }
 
 export interface User {
+  id: string;
   firstName: string;
   lastName: string;
   email: string;

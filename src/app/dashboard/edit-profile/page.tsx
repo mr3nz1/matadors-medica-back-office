@@ -1,5 +1,5 @@
 import React from 'react';
-import Layout from '@/app/components/layout';
+import Layout from '@/components/layout';
 const Appointment: React.FC = () => {
   return (
     <Layout>
