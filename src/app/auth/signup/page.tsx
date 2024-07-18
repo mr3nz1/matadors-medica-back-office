@@ -11,7 +11,7 @@ import {
   FaLock,
 } from "react-icons/fa";
 import Image from "next/image";
-import Navbar from "../../components/navbar";
+import Navbar from "@/app/components/navbar";
 import Logo from "../../assets/images/sign.png";
 import Link from "next/link";
 import { signup } from "../action";

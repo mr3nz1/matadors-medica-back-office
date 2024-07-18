@@ -1,6 +1,6 @@
 // components/Footer.js
-import Image from 'next/image';
-import Logo from '../assets/images/Logo.png'; // Adjust the path based on your directory structure
+import Image from "next/image";
+import Logo from '@/app/assets/images/Logo.png'; // Adjust the path based on your directory structure
 
 const Footer = () => {
   return (
@@ -12,13 +12,12 @@ const Footer = () => {
             <Image
               src={Logo}
               alt="logo"
+              className="self-center h-8 mr-2"
               sizes="10vw"
               style={{
                 width: "35px",
                 height: "35px",
-              }}
-              className="self-center h-8 mr-2"
-            />
+              }} />
             <h1 className="text-4xl font-bold text-black self-center">Medica</h1>
           </div>
         </div>

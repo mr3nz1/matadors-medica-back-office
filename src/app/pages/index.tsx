@@ -1,7 +1,7 @@
 "use client"
 import Mobile from "../assets/images/Mobile.png"
 import Logo from "../assets/images/Medica.svg"
-import Image from 'next/image'
+import Image from "next/image"
 import { Menu } from '@headlessui/react';
 import React, { useState } from 'react';
 import Link from "next/link";
@@ -9,19 +9,20 @@ import Link from "next/link";
 export default function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
 
-  return (<>
+  return <>
     <div className="w-full h-[100vh] m-0 p-0">
       <div className="w-full h-[8vh] bg-[#EEF4FF] flex justify-center p-2.5">
         <div className="w-[90%] md:w-[60%] flex justify-between">
           <div className="flex items-center">
-            <Image src={Logo}
+            <Image
+              src={Logo}
               alt="logo"
+              className="self-center h-8 mr-2"
               sizes="10vw"
               style={{
                 width: '80%',
                 height: '80%',
-              }}
-              className="self-center h-8 mr-2"/>
+              }} />
               <h1 className="text-lg font-bold text-black self-center">Medica</h1>
             </div>
             <div className="hidden md:flex gap-5">
@@ -105,10 +106,17 @@ export default function Index() {
                 <button className="w-[100px] md:w-[100px] h-[5vh] text-xs md:text-xm text-[#246BFD] bg-[#E9F0FF] rounded-full p-2">Learn More</button>
               </div>
             </div>
-            <Image src={Mobile} alt="Mobile" className="w-[140px] md:w-[170px] h-[230px] md:h-[310px]" />
+            <Image
+              src={Mobile}
+              alt="Mobile"
+              className="w-[140px] md:w-[170px] h-[230px] md:h-[310px]"
+              style={{
+                maxWidth: "100%",
+                height: "auto"
+              }} />
           </div>
         </div>
       </div>
     </div>
-  </>)
+  </>;
 }

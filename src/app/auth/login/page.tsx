@@ -1,5 +1,5 @@
 "use client";
-import Navbar from "../../components/navbar";
+import Navbar from "@/app/components/navbar";
 import Image from "next/image";
 import {
   FaApple,
@@ -10,7 +10,7 @@ import {
   FaEye,
   FaLock,
 } from "react-icons/fa";
-import Logo from "../../assets/images/log.png";
+import Logo from "@/app/assets/images/log.png";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "../../../../ctx/AuthContext";

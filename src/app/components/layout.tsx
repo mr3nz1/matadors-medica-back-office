@@ -6,7 +6,7 @@ import Navbar from "./navbar";
 import Image from "next/image";
 import Logo from "../assets/images/Logo.png";
 import Profile from "../assets/images/Ellipse.png";
-import Sidebar from "./sidebar";
+import Sidebar from "@/app/components/sidebar";
 import Search from "./search";
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
