@@ -1,21 +1,23 @@
 "use client";
 
 import React, { useState } from "react";
-import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { FaHome, FaCalendarAlt, FaFileAlt, FaUserEdit } from "react-icons/fa";
 import Logo from "../assets/images/Logo.png";
 import Profile from "../assets/images/Ellipse.png";
 import MenuIcon from "@mui/icons-material/Menu";
 import CloseIcon from "@mui/icons-material/Close";
-import { useAuth } from "../../ctx/AuthContext";
+import { useAuth } from "../../../ctx/AuthContext";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const Sidebar: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   const pathname = usePathname();
 
   const menuItems = [
-    { name: "Home", path: "/dashboard/home", icon: <FaHome /> },
+    { name: "Home", path: "/dashboard", icon: <FaHome /> },
     {
       name: "Appointment",
       path: "/dashboard/appointment",
@@ -71,16 +73,16 @@ const Sidebar: React.FC = () => {
         <nav className="flex text-black justify-center">
           <ul>
             {menuItems.map((item, index) => (
-              <li
+              <Link
+                href={item.path}
                 key={index}
                 className={`mb-6 flex items-center cursor-pointer ${
                   pathname === item.path ? "text-[#5089FD]" : ""
                 }`}
-                onClick={() => (window.location.href = item.path)}
               >
                 <div className="mr-3">{item.icon}</div>
                 <a className="text-lg">{item.name}</a>
-              </li>
+              </Link>
             ))}
           </ul>
         </nav>

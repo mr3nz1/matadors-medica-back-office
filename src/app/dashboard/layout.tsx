@@ -4,13 +4,14 @@ import React, { useEffect } from "react";
 import { useWithAuth } from "../../../hooks/useWithAuth";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../ctx/AuthContext";
+import DesignLayout from "../components/layout";
 
 interface Props {
   children: React.ReactNode;
 }
 
 export default function Layout({ children }: Props) {
-  const { isLoggedIn, status } = useAuth();
+  const { isLoggedIn, status, user } = useAuth();
   const router = useRouter();
 
   if (status == "loading") {
@@ -22,5 +23,5 @@ export default function Layout({ children }: Props) {
     return null;
   }
 
-  return <div>{children}</div>;
+  return <DesignLayout>{children}</DesignLayout>;
 }
