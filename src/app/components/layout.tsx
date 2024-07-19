@@ -31,7 +31,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <Sidebar />
       <div className="flex-1 lg:ml-72 m ">
         <main className=" p-5 pr-5 pl-5 pb-10 bg-[#FAFAFA] text-black  ">
-          <Search data={"da"} onSearch="" />
+          <Search onSearch={() => {}} />
           {children}
         </main>
       </div>

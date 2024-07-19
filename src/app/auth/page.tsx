@@ -5,7 +5,7 @@ import Logo from '../assets/images/log.png'
 
 import Navbar from '../components/navbar';
 import Link from 'next/link';
-import Button from '../components/Button';
+import Button from '../components/button';
 
 export default function Login() {
   return (
