@@ -15,7 +15,7 @@ export default function Login() {
  
     <div className=" flex items-center justify-center ">
        
-      <div className=" w-full space-y-8 flex justify-center p-7 gap-6  w-full">
+      <div className=" w-full space-y-8 flex justify-center p-7 gap-6">
         <div className="text-center w-[50%]">
         <Image src={Logo} alt='logo'/>
          

@@ -29,6 +29,12 @@ const Sidebar: React.FC = () => {
       path: "/dashboard/edit-profile",
       icon: <FaUserEdit />,
     },
+
+    {
+      name: "Notifications",
+      path: "/dashboard/notifications",
+      icon: <FaUserEdit />,
+    },
   ];
   const { user } = useAuth();
 
@@ -51,17 +57,17 @@ const Sidebar: React.FC = () => {
               alt="logo"
               width={50}
               height={50}
-              className="self-center mr-2"
+              className="self-center mr-2 rounded-full"
             />
             <h1 className="text-lg font-bold text-black self-center">Medica</h1>
           </div>
           <div className="flex flex-col text-black items-center pb-5">
             <Image
-              src={Profile}
+              src={user.image && user.image}
               alt="profile"
               width={100}
               height={100}
-              className="self-center mr-2"
+              className="self-center"
             />
             <h1 className="text-lg font-bold text-black self-center py-3">
               {"Dr." + user.firstName + " " + user.lastName}

@@ -29,6 +29,7 @@ export interface User {
   email: string;
   specialization: string;
   about: string;
-  userId: string;
+  doctorId: string;
   token: string;
+  image: string;
 }

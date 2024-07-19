@@ -23,5 +23,9 @@ export default function Layout({ children }: Props) {
     return null;
   }
 
-  return <DesignLayout>{children}</DesignLayout>;
+  return (
+    <DesignLayout>
+      <div className="w-full h-full bg-white">{children}</div>
+    </DesignLayout>
+  );
 }
