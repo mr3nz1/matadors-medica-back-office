@@ -4,6 +4,7 @@ import Logo from "../assets/images/Medica.svg"
 import Image from 'next/image'
 import { Menu } from '@headlessui/react';
 import React, { useState } from 'react';
+import Link from "next/link";
 
 export default function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -24,10 +25,20 @@ export default function Index() {
               <h1 className="text-lg font-bold text-black self-center">Medica</h1>
             </div>
             <div className="hidden md:flex gap-5">
-              <h4 className="text-sm font-bold text-black self-center">HOME</h4>
-              <h4 className="text-sm font-bold text-black self-center">APP</h4>
-              <h4 className="text-sm font-bold text-black self-center">DOWNLOAD</h4>
-              <h4 className="text-sm font-bold text-black self-center">CONTACT US</h4>
+              <ul className="flex gap-5 items-center">
+                <li>
+                  <Link href="/auth/signup" className="text-sm font-bold text-black self-center">HOME</Link>
+                </li>
+                <li>
+                  <Link href="/auth/login" className="text-sm font-bold text-black self-center">APP</Link>
+                </li>
+                <li>
+                  <Link href="/" className="text-sm font-bold text-black self-center">DOWNLOAD</Link>
+                </li>
+                <li>
+                  <Link href="/" className="text-sm font-bold text-black self-center">CONTACT</Link>
+                </li>
+              </ul>
             </div>
             <div className="md:hidden">
               <Menu>
