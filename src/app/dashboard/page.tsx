@@ -155,7 +155,7 @@ const Home = () => {
                 className="py-3 border-b flex items-center justify-between"
               >
                 <div className="flex gap-4">
-                  <img
+                  <Image
                     src={menu[index % menu.length].image}
                     alt="gr"
                     className="w-[45px] h-[45px] rounded-full"
@@ -188,7 +188,7 @@ const Home = () => {
                 className="py-3 border-b flex items-center justify-between"
               >
                 <div className="flex gap-4">
-                  <img
+                  <Image
                     src={menu[index % menu.length].image}
                     alt="gr"
                     className="w-[45px] h-[45px] rounded-full"
@@ -222,7 +222,7 @@ const Home = () => {
             ).map((appointment, index) => (
               <div key={index} className="py-3 border-b flex justify-between">
                 <div className="flex gap-4">
-                  <img
+                  <Image
                     src={appointment.image}
                     alt="gr"
                     className="w-[45px] h-[45px] rounded-full"

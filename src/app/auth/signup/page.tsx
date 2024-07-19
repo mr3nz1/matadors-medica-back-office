@@ -16,7 +16,7 @@ import Logo from "../../assets/images/sign.png";
 import Link from "next/link";
 import { signup } from "../action";
 import Input from "@/app/components/Input";
-import Button from "@/app/components/Button";
+import Button from "@/app/components/button";
 import { useAuth } from "../../../../ctx/AuthContext";
 import { useRouter } from "next/navigation";
 

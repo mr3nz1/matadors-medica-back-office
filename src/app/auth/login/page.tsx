@@ -45,6 +45,7 @@ export default function LoginPage() {
   async function handleSubmit() {
     try {
       setIsLoading(true);
+      setError("")
       await login(formData.email, formData.password);
       setIsLoading(false);
       router.replace("/dashboard");
@@ -169,7 +170,7 @@ export default function LoginPage() {
                 </div>
                 <div className="text-center mt-2">
                   <p className="text-gray-500">
-                    Don't have an account?{" "}
+                    Don&apost have an account?{" "}
                     <Link
                       href="/auth/signup"
                       className="font-medium text-blue-600 hover:text-blue-500"
