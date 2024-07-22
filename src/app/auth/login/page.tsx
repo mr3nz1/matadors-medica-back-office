@@ -47,9 +47,10 @@ export default function LoginPage() {
       setIsLoading(true);
       setError("")
       await login(formData.email, formData.password);
-      setIsLoading(false);
       router.replace("/dashboard");
+      setIsLoading(false);
     } catch (err) {
+      console.log(err)
       setError((err as Error).message);
       setIsLoading(false);
       setStatus("error");
@@ -71,7 +72,13 @@ export default function LoginPage() {
                   Login to Your Account
                 </h2>
               </div>
-              <form className="mt-8 space-y-6">
+              <form
+                className="mt-8 space-y-6"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSubmit();
+                }}
+              >
                 <div className="rounded-md shadow-sm flex flex-col gap-5">
                   <div className="relative">
                     <label htmlFor="email-address" className="sr-only">
@@ -110,7 +117,7 @@ export default function LoginPage() {
                     </div>
                   </div>
                 </div>
-                {error !== "" && (
+                {error !== "" && !isLoading && (
                   <div className="bg-red-100 border border-red-300 px-4 py-2 rounded-md text-red-500 text-xs t">
                     {error}
                   </div>
@@ -132,10 +139,7 @@ export default function LoginPage() {
                   </div>
                 </div>
                 <div>
-                  <button
-                    formAction={handleSubmit}
-                    className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 mb-4"
-                  >
+                  <button className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-full text-white bg-blue-600 hover:bg-blue-700 mb-4">
                     {isLoading ? "Loading" : "Sign In"}
                   </button>
 

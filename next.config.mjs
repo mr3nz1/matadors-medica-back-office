@@ -14,6 +14,8 @@ const nextConfig = {
             { protocol: "https", hostname: "www.encrypted-tbn0.gstatic.com" },
             { protocol: "https", hostname: "americanhatmakers.com" },
             { protocol: "https", hostname: "www.americanhatmakers.com" },
+            { protocol: "https", hostname: "images.unsplash.com" },
+            { protocol: "https", hostname: "www.images.unsplash.com" },
         ],
     },
 };

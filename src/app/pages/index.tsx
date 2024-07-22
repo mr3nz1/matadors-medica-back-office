@@ -1,5 +1,5 @@
 "use client"
-import Mobile from "../Assets/images/Mobile.png"
+import Mobile from "../assets/images/Mobile.png"
 import Logo from "../assets/images/Medica.svg"
 import Image from 'next/image'
 import { Menu } from '@headlessui/react';
