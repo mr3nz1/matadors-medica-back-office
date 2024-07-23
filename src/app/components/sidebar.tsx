@@ -41,7 +41,7 @@ const Sidebar: React.FC = () => {
   return (
     <>
       <MenuIcon
-        className="md:hidden fixed top-5 text-4xl left-5 z-50 bg-gray-700 p-2 rounded"
+        className="lg:hidden fixed top-5 text-4xl left-5 z-50 bg-gray-700 p-2 rounded "
         onClick={() => setIsSidebarOpen(true)}
       />
 
@@ -94,7 +94,7 @@ const Sidebar: React.FC = () => {
         </nav>
 
         <CloseIcon
-          className="md:hidden text-4xl fixed top-5 right-5 z-50 bg-red-500 p-2 rounded"
+          className="lg:hidden text-4xl fixed top-5 right-5 z-50 bg-red-500 p-2 rounded"
           onClick={() => setIsSidebarOpen(false)}
         />
       </aside>
