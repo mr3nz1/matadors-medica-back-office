@@ -12,6 +12,9 @@ import Image from "next/image";
 import { supabase } from "../../../utils/supabase/config";
 import { ClipLoader } from "react-spinners";
 import Link from "next/link";
+import { DoctorsType } from "../constants/type";
+import { fetchDoctorData } from "../utils/LoggedInUser";
+import { StreamClient } from "../utils/StreamChat/StreamClient";
 interface Appointment {
   id: string;
   name: string;
@@ -51,6 +54,45 @@ const Home = () => {
     setSearchQuery(event.target.value);
   };
   const { user } = useAuth();
+  const [doctorData, setDoctorData] = useState<DoctorsType[]>([]);
+  const[streamConnected, setStreamConnected] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (user && user?.id) {
+      fetchDoctorData(user?.id, setDoctorData);
+      // getUserImageUrl("patients", userId , setImageUrl);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    const connectUserToStream = async () => {
+      setStreamConnected(false);
+      try {
+        if (doctorData && Array.isArray(doctorData)) {
+          const doctor = {
+            id: doctorData[0]?.id,
+            name: doctorData[0]?.first_name + " " + doctorData[0]?.last_name
+            ,
+            image: "https://i.imgur.com/fR9Jz14.png",
+          };
+
+          await StreamClient.connectUser(
+            doctor,
+            StreamClient.devToken(doctor?.id)
+          );
+          setStreamConnected(true);
+        } else {
+          setStreamConnected(false);
+        }
+      } catch (error) {
+        setStreamConnected(false);
+        console.log("error while connecting user", error);
+      }
+    };
+    if (!StreamClient.userID) {
+      connectUserToStream();
+    }
+  }, [doctorData, user]);
 
   useEffect(() => {
     const updateGreeting = () => {
