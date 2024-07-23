@@ -9,11 +9,44 @@ import Search from "../components/search";
 import { Logout } from "@/app/auth/action";
 import { useAuth } from "../../../ctx/AuthContext";
 import Image from "next/image";
-
+import { supabase } from "../../../utils/supabase/config";
+import { ClipLoader } from "react-spinners";
+import Link from "next/link";
+interface Appointment {
+  id: string;
+  name: string;
+  created_at: string;
+  doctor_id: string;
+  date: string;
+  time: string;
+  package: string;
+  price: string;
+  illness: string;
+  status: string;
+  user_id: string;
+  profilePhoto: string;
+  user: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    image: string;
+  };
+}
+interface FileObject {
+  name: string;
+}
 const Home = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [filteredAppointments, setFilteredAppointments] = useState<any[]>([]);
   const [greeting, setGreeting] = useState("");
+  const [appointment, setAppointment] = useState<Appointment[]>([]);
+  const [todayAppointments, setTodayAppointments] = useState<Appointment[]>([]);
+  const [pendingAppointments, setPendingAppointments] = useState<Appointment[]>([]);
+  const [recentAppointments, setRecentAppointments] = useState<Appointment[]>([]);
+  const [imageUrl, setImageUrl] = useState<Record<string, FileObject[]>>({});
+  const [profilePhoto, setProfilePhoto] = useState<Record<string, string | null>>({});
+  const [isLoading, setIsLoading] = useState(false);
+  
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
@@ -37,73 +70,121 @@ const Home = () => {
     const intervalId = setInterval(updateGreeting, 60000);
     return () => clearInterval(intervalId);
   }, []);
-
-  const performSearch = () => {
-    if (!searchQuery.trim()) {
-      setFilteredAppointments([]);
+  useEffect(() =>{
+    setIsLoading(true);
+    async function FetchAppointments() {
+      try {
+      
+      const { data: doctorData, error: doctorsError } =
+      await supabase.from("doctors").select("*").eq("auth_id", user.id);
+    
+    if (doctorsError) {
+     setIsLoading(false);
+      console.error("Error fetching doctor:", doctorsError);
       return;
     }
-
-    const filtered = recentAppointments.filter((appointment) =>
-      appointment.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const doctorId = doctorData.map(
+      (doctor) => doctor.id
     );
-    setFilteredAppointments(filtered);
-  };
+
+    const { data: appointmentData, error: appointmentsError } =
+      await supabase.from("appointment").select("*").eq("doctor_id", doctorId);
+    
+    if (appointmentsError) {
+     setIsLoading(false);
+      console.error("Error fetching appointments:", appointmentsError);
+      return;
+    }
+    const userId = appointmentData.map(
+      (user) => user.user_id
+    );
+    const { data: userData, error: userError } =
+    await supabase.from("patients").select("*").in("id", userId);
+  
+  if (userError) {
+    setIsLoading(false);
+    console.error("Error fetching users:", userError);
+    return;
+  }
+          
+  const imageUrlObject: Record<string, FileObject[]> = {};
+  const profilePhotoObject: Record<string, string | null> = {};
+
+  for (const patient of userData) {
+    const path = patient.auth_id + '/';
+    
+    const { data: imageData, error: imageError } = await supabase
+      .storage
+      .from("patients")
+      .list(patient.auth_id + '/', {
+        limit: 100,
+        offset: 0,
+        sortBy: { column: 'name', order: 'asc' },
+      });
+  
+    if (imageError) {
+      console.error(`Error fetching images for patient ${patient.id}:`, imageError);
+      profilePhotoObject[patient.id] = null;
+      continue;
+    }
+          
+    imageUrlObject[patient.id] = imageData || [];
+    
+    if (imageData && imageData.length > 0) {
+      const { data } = supabase
+        .storage
+        .from("patients")
+        .getPublicUrl(`${patient.auth_id}/${imageData[0].name}`);
+  
+      profilePhotoObject[patient.id] = data.publicUrl;
+    } else {
+      profilePhotoObject[patient.id] = null;
+    }
+  }
+
+  setImageUrl(imageUrlObject);
+  setProfilePhoto(profilePhotoObject);
+
+
+  const mergedData = appointmentData.map((appointment) => ({
+    ...appointment,
+     user :userData.find(
+      user => user.id === appointment.user_id
+    )!,
+    userImages: imageUrlObject[appointment.user_id] || [],
+    profilePhoto: profilePhotoObject[appointment.user_id]
+    
+  }));
+
+  setAppointment(mergedData);
+  console.log("app",appointment)
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  FetchAppointments();
+}, [user.id]);
+  
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0];
+    
+    setTodayAppointments(appointment.filter(app => app.date === today));
+    setPendingAppointments(appointment.filter(app => app.status === "Upcoming"));
+    setRecentAppointments(appointment.filter(app => app.status === "Completed" || app.status === "Cancelled"));
+  }, [appointment])
+
 
   const resetSearch = () => {
     setSearchQuery("");
     setFilteredAppointments([]);
   };
-  const menu = [
-    {
-      call: "Video call",
-      image:
-        "https://www.realmenrealstyle.com/wp-content/uploads/2023/08/Kinky-Hair.jpg",
-    },
-    {
-      call: "Messaging",
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIN1gwlCld-PW_qX5QxwNMdPUff8gYhTOe8w&s",
-    },
-  ];
-
-  const recentAppointments = [
-    {
-      image:
-        "https://americanhatmakers.com/cdn/shop/files/Hollywood-Copper-Leather-Cowboy-Hat-Mens-FW23-American-Hat-Makers_1.webp?v=1715028775&width=1000",
-      name: "Annabel Rohan",
-      date: "12-08-2024",
-      status: "Review",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIN1gwlCld-PW_qX5QxwNMdPUff8gYhTOe8w&s",
-      name: "Geoffrey Mott",
-      date: "12-08-2024",
-      status: "Pending",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToonwNT4zbwCyq-k-qAzXexPn6URz3gT4BxQ&s",
-      name: "Rayford Chenail",
-      date: "12-08-2024",
-      status: "Review",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIN1gwlCld-PW_qX5QxwNMdPUff8gYhTOe8w&s",
-      name: "John Doe",
-      date: "12-08-2024",
-      status: "Review",
-    },
-    {
-      image:
-        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToonwNT4zbwCyq-k-qAzXexPn6URz3gT4BxQ&s",
-      name: "John Doe",
-      date: "12-08-2024",
-      status: "Review",
-    },
-  ];
+  const messageAppointmentsCount = appointment.filter(appointment =>appointment.status === "Upcoming" && appointment.package === "Messaging").length;
+  console.log(messageAppointmentsCount)
+  const voiceAppointmentsCount = appointment.filter(appointment =>  appointment.package === "Voice Call").length;
+  const videoAppointmentsCount = appointment.filter(appointment => appointment.status === "Upcoming" && appointment.package === "Video Call").length;
 
   return (
     <div>
@@ -119,21 +200,23 @@ const Home = () => {
             <ForumIcon className="text-white text-4xl " />
           </div>
           <div>
-            <h3 className="text-4xl font-semibold flex flex-col text-center">
-              30 <span className="font-light text-xl">Messages</span>
+            <h3 className="text-4xl font-semibold flex flex-col text-center"> {
+              messageAppointmentsCount
+              }
+              <span className="font-light text-xl">Messaging</span>
             </h3>
           </div>
         </div>
         <div className="bg-[#246BFD] flex justify-center items-center gap-5 text-white p-5 shadow rounded-lg">
           <VideocamIcon className="text-white text-4xl " />
           <h3 className="text-4xl font-semibold flex flex-col text-center">
-            46<span className="font-light text-xl">Voice Call</span>
+            {voiceAppointmentsCount}<span className="font-light text-xl">Voice Call</span>
           </h3>
         </div>
         <div className="bg-[#246BFD] flex justify-center items-center gap-5 text-white p-5 shadow rounded-lg">
           <VideocamIcon className="text-white text-4xl " />
           <h3 className="text-4xl font-semibold flex flex-col text-center">
-            22<span className="font-light text-xl"> Video Call</span>
+            {videoAppointmentsCount}<span className="font-light text-xl"> Video Call</span>
           </h3>
           <h3 className="text-xl font-semibold"></h3>
         </div>
@@ -143,27 +226,87 @@ const Home = () => {
           <div className="bg-white p-5 shadow rounded-lg mb-4">
             <div className="flex justify-between">
               <h3 className="text-xl font-semibold mb-4">
-                Today&aposs Appointment
+                Today Appointments
               </h3>
-              <h3 className="text-xl font-semibold mb-4 text-[#5089FD]">
+              <Link  className="text-xl font-semibold mb-4 text-[#5089FD]" href="/dashboard/appointment">
                 See All
-              </h3>
+              </Link>
             </div>
-            {["Annabel Rohan", "Geoffrey Mott"].map((name, index) => (
+            {
+              isLoading ? (
+                <ClipLoader
+                  color= "blue"
+                  size={25}
+                  
+                />
+              ) : (
+                todayAppointments.length > 0 ? (
+            todayAppointments.map((appointment, index) => (
+               <div
+               key={index}
+               className="py-3 border-b flex items-center justify-between"
+             >
+               <div className="flex gap-4">
+                 <Image
+                   src ={appointment.profilePhoto}
+                   alt="gr"
+                   className="w-[45px] h-[45px] rounded-full"
+                   width={45}
+                   height={45}
+                 />
+                 <p className="text-lg flex flex-col">
+                   {appointment.user.first_name} {appointment.user.last_name} <span>{appointment.package}</span>{" "}
+                 </p>
+               </div>
+
+               <div className="bg-blue-200 p-2 rounded-full cursor-pointer">
+                 <ChevronRightIcon className="bg-blue-500 rounded-full text-md text-white " />
+               </div>
+             </div>
+             
+            )
+          )
+        ) : (
+          <p className="text-sm flex flex-col">
+                   No Today appointments available{" "}
+                 </p>  
+ )
+            )}
+          </div>
+          <div className="bg-white p-5 shadow rounded-lg">
+            <div className="flex justify-between">
+              <h3 className="text-xl font-semibold mb-4">
+                Pending Appointments
+              </h3>
+              <a  className="text-xl font-semibold mb-4 text-[#5089FD]" href="/dashboard/appointment">
+                See All
+              </a>
+            </div>
+         
+             {
+             isLoading ? (
+              <ClipLoader
+                color= "blue"
+                size={25}
+                
+              />
+            ) : (
+              pendingAppointments.length > 0 ? (
+             pendingAppointments.map((appointment, index) => (
               <div
                 key={index}
                 className="py-3 border-b flex items-center justify-between"
               >
                 <div className="flex gap-4">
                   <Image
-                    src={menu[index % menu.length].image}
+                    src={appointment.profilePhoto}
                     alt="gr"
                     className="w-[45px] h-[45px] rounded-full"
                     width={45}
                     height={45}
                   />
                   <p className="text-lg flex flex-col">
-                    {name} <span>{menu[index % menu.length].call}</span>{" "}
+                    {appointment.user.first_name} {appointment.user.last_name} <span>{appointment.package}</span>{" "}
                   </p>
                 </div>
 
@@ -171,39 +314,14 @@ const Home = () => {
                   <ChevronRightIcon className="bg-blue-500 rounded-full text-md text-white " />
                 </div>
               </div>
-            ))}
-          </div>
-          <div className="bg-white p-5 shadow rounded-lg">
-            <div className="flex justify-between">
-              <h3 className="text-xl font-semibold mb-4">
-                Pending&aposs Appointment
-              </h3>
-              <h3 className="text-xl font-semibold mb-4 text-[#5089FD]">
-                See All
-              </h3>
-            </div>
-            {["Annabel Rohan", "Geoffrey Mott"].map((name, index) => (
-              <div
-                key={index}
-                className="py-3 border-b flex items-center justify-between"
-              >
-                <div className="flex gap-4">
-                  <Image
-                    src={menu[index % menu.length].image}
-                    alt="gr"
-                    className="w-[45px] h-[45px] rounded-full"
-                    width={45}
-                    height={45}
-                  />
-                  <p className="text-lg flex flex-col">
-                    {name} <span>{menu[index % menu.length].call}</span>{" "}
-                  </p>
-                </div>
-                <div className="bg-blue-200 p-2 rounded-full cursor-pointer">
-                  <ChevronRightIcon className="bg-blue-500 rounded-full text-md text-white " />
-                </div>
-              </div>
-            ))}
+            ))
+          ) : (
+            <p className="text-sm flex flex-col">
+                     No Pending appointments available{" "}
+               </p>
+          )  
+            
+          )}
           </div>
         </div>
         <div>
@@ -212,41 +330,55 @@ const Home = () => {
               <h3 className="text-xl font-semibold mb-4">
                 Recent Appointments
               </h3>
-              <h3 className="text-xl font-semibold mb-4 text-[#5089FD]">
+              <a  className="text-xl font-semibold mb-4 text-[#5089FD]" href="/dashboard/appointment">
                 See All
-              </h3>
+              </a>
             </div>
-            {(searchQuery.trim()
-              ? filteredAppointments
-              : recentAppointments
-            ).map((appointment, index) => (
+            {
+              isLoading ? (
+                <ClipLoader
+                  color= "blue"
+                  size={25}
+                  
+                />
+              ) : (
+                recentAppointments.length > 0 ? (
+            recentAppointments
+            .map((appointment, index) => (
               <div key={index} className="py-3 border-b flex justify-between">
                 <div className="flex gap-4">
                   <Image
-                    src={appointment.image}
+                    src={appointment.profilePhoto}
                     alt="gr"
                     className="w-[45px] h-[45px] rounded-full"
                     width={45}
                     height={45}
                   />
-                  <p className="text-lg flex flex-col">
-                    {appointment.name} <span>{appointment.date}</span>{" "}
+                   <p className="text-lg flex flex-col">
+                    {appointment.user.first_name} {appointment.user.last_name} <span>{appointment.date}</span>{" "}
                   </p>
                 </div>
 
                 <div className="flex items-center">
-                  {appointment.status === "Pending" ? (
-                    <button className="border border-blue-500 text-blue-500 px-3 py-1 rounded">
-                      Pending
+                  {appointment.status === "Completed" ? (
+                    <button className="border border-green-500 text-green-500 px-3 py-1 rounded">
+                      Completed
                     </button>
                   ) : (
-                    <button className="border border-green-500 text-green-500 px-3 py-1 rounded">
-                      Review
+                    
+                    <button className="border border-pink-500 text-pink-500 px-3 py-1 rounded">
+                      Cancelled
                     </button>
                   )}
                 </div>
               </div>
-            ))}
+            ))
+          ) : (
+            <p className="text-sm flex flex-col">
+                     No Recent appointments available{" "}
+               </p>
+          )  
+          )}
           </div>
         </div>
       </div>

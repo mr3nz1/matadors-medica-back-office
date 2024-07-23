@@ -16,7 +16,12 @@ const nextConfig = {
             { protocol: "https", hostname: "www.americanhatmakers.com" },
             { protocol: "https", hostname: "images.unsplash.com" },
             { protocol: "https", hostname: "www.images.unsplash.com" },
+            { protocol: 'https', hostname: 'vbwbfflzxuhktdvpbspd.supabase.co'}
         ],
+        
+            
+          
+        
     },
 };
 

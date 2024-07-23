@@ -29,9 +29,9 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <div className="flex min-h-screen bg-white">
       <Sidebar />
-      <div className="flex-1 lg:ml-72 m ">
-        <main className=" p-5 pr-5 pl-5 pb-10 bg-[#FAFAFA] text-black  ">
-          <Search placeholder="Search" onSearch={() => {}} />
+      <div className="flex-1 lg:ml-72 m bg-[#FAFAFA] ">
+        <main className=" p-5 pr-5 pl-5 pb-10 bg-[#FAFAFA] text-black pt-20 ">
+          {/* <Search onSearch={() => {}} /> */}
           {children}
         </main>
       </div>
