@@ -12,6 +12,7 @@ import Image from "next/image";
 import { supabase } from "../../../utils/supabase/config";
 import { ClipLoader } from "react-spinners";
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 import { DoctorsType } from "../constants/type";
 import { fetchDoctorData } from "../utils/LoggedInUser";
 import { StreamClient } from "../utils/StreamChat/StreamClient";
@@ -49,7 +50,7 @@ const Home = () => {
   const [imageUrl, setImageUrl] = useState<Record<string, FileObject[]>>({});
   const [profilePhoto, setProfilePhoto] = useState<Record<string, string | null>>({});
   const [isLoading, setIsLoading] = useState(false);
-  
+  const router = useRouter();
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
@@ -225,9 +226,12 @@ const Home = () => {
   };
   const messageAppointmentsCount = appointment.filter(appointment =>appointment.status === "Upcoming" && appointment.package === "Messaging").length;
   console.log(messageAppointmentsCount)
-  const voiceAppointmentsCount = appointment.filter(appointment =>  appointment.package === "Voice Call").length;
+  const voiceAppointmentsCount = appointment.filter(appointment =>  appointment.status === "Upcoming" && appointment.package === "Voice Call").length;
   const videoAppointmentsCount = appointment.filter(appointment => appointment.status === "Upcoming" && appointment.package === "Video Call").length;
-
+  const handleRowClick = (id: string) => {
+    router.push(`/dashboard/appointment/details?id=${id}`);
+    
+  };
   return (
     <div>
       <div className="mb-10">
@@ -270,9 +274,10 @@ const Home = () => {
               <h3 className="text-xl font-semibold mb-4">
                 Today Appointments
               </h3>
+              {todayAppointments.length != 0 ? 
               <Link  className="text-xl font-semibold mb-4 text-[#5089FD]" href="/dashboard/appointment">
                 See All
-              </Link>
+              </Link> : null}
             </div>
             {
               isLoading ? (
@@ -286,7 +291,9 @@ const Home = () => {
             todayAppointments.map((appointment, index) => (
                <div
                key={index}
-               className="py-3 border-b flex items-center justify-between"
+               className="py-3 border-b flex items-center justify-between cursor-pointer"
+               onClick={() => handleRowClick(appointment.id)} 
+               
              >
                <div className="flex gap-4">
                  <Image
@@ -320,9 +327,10 @@ const Home = () => {
               <h3 className="text-xl font-semibold mb-4">
                 Pending Appointments
               </h3>
+              {pendingAppointments.length != 0 ? 
               <a  className="text-xl font-semibold mb-4 text-[#5089FD]" href="/dashboard/appointment">
                 See All
-              </a>
+              </a>:null}
             </div>
          
              {
@@ -337,7 +345,9 @@ const Home = () => {
              pendingAppointments.map((appointment, index) => (
               <div
                 key={index}
-                className="py-3 border-b flex items-center justify-between"
+                className="py-3 border-b flex items-center justify-between cursor-pointer"
+                onClick={() => handleRowClick(appointment.id)} 
+                
               >
                 <div className="flex gap-4">
                   <Image
@@ -372,9 +382,10 @@ const Home = () => {
               <h3 className="text-xl font-semibold mb-4">
                 Recent Appointments
               </h3>
+              {recentAppointments.length != 0 ? 
               <a  className="text-xl font-semibold mb-4 text-[#5089FD]" href="/dashboard/appointment">
                 See All
-              </a>
+              </a>: null}
             </div>
             {
               isLoading ? (
@@ -387,7 +398,7 @@ const Home = () => {
                 recentAppointments.length > 0 ? (
             recentAppointments
             .map((appointment, index) => (
-              <div key={index} className="py-3 border-b flex justify-between">
+              <div key={index} className="py-3 border-b flex justify-between cursor-pointer"  onClick={() => handleRowClick(appointment.id)} >
                 <div className="flex gap-4">
                   <Image
                     src={appointment.profilePhoto}
