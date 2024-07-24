@@ -65,9 +65,9 @@ const Sidebar: React.FC = () => {
             <Image
               src={user.image && user.image}
               alt="profile"
-              width={100}
-              height={100}
-              className="self-center"
+              width={150}
+              height={150}
+              className="self-center rounded-[150%]"
             />
             <h1 className="text-lg font-bold text-black self-center py-3">
               {"Dr." + user.firstName + " " + user.lastName}
