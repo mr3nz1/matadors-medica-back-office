@@ -1,9 +1,9 @@
-import Image from 'next/image';
+import Image from "next/image";
 import React from 'react';
 import { FaApple, FaFacebook, FaGoogle } from 'react-icons/fa';
-import Logo from '../assets/images/log.png'
+import Logo from '@/app/assets/images/log.png'
 
-import Navbar from '../components/navbar';
+import Navbar from '@/app/components/navbar';
 
 export default function Login() {
   return (
